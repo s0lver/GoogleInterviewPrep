@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         txtOutput = MainActivity.this.findViewById(R.id.txtOutput);
+
         mainThreadHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
@@ -45,6 +46,12 @@ public class MainActivity extends AppCompatActivity {
     public void doStuffWithLooper(View v) {
         Message message = new Message();
         message.what = 1;
+        Bundle messageBundle = new Bundle();
+        messageBundle.putString("name", "Rafael");
+        messageBundle.putInt("age", 35);
+
+        message.setData(messageBundle);
+
         looperThread.handler.sendMessage(message);
         looperThread.handler.postDelayed(new Runnable() {
             @Override
@@ -71,7 +78,14 @@ public class MainActivity extends AppCompatActivity {
                 // This will help to process the messages received by the handler
                 @Override
                 public boolean handleMessage(@NonNull Message message) {
-                    Log.i("LooperThread", "Got " + message.what + " from " + message.getTarget().getLooper().getThread().getName());
+                    Bundle messageData = message.getData();
+
+                    Log.i("LooperThread",
+                            "Got " + messageData.getString("name") + ", " +
+                                    messageData.getInt("age") + " in " +
+                                    Thread.currentThread().getName()
+                    );
+
                     Message newMessage = new Message();
                     newMessage.what = message.what;
 
