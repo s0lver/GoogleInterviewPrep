@@ -3,6 +3,7 @@ package com.solver.googleinterviewprep;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -10,6 +11,8 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+
+import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
     // https://www.dev2qa.com/android-thread-message-looper-handler-example/
@@ -22,9 +25,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        txtOutput = MainActivity.this.findViewById(R.id.txtOutput);
+        this.txtOutput = MainActivity.this.findViewById(R.id.txtOutput);
 
-        mainThreadHandler = new Handler(Looper.getMainLooper()) {
+        this.mainThreadHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 String newText = txtOutput.getText() + ", done you " + msg.what;
@@ -33,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        looperThread = new LooperThread();
+        this.looperThread = new LooperThread();
         looperThread.start();
     }
 
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     public void doStuffWithLooper(View v) {
         Message message = new Message();
         message.what = 1;
+
         Bundle messageBundle = new Bundle();
         messageBundle.putString("name", "Rafael");
         messageBundle.putInt("age", 35);
@@ -61,7 +65,13 @@ public class MainActivity extends AppCompatActivity {
         }, 3000);
     }
 
-    class LooperThread extends Thread {
+    public void doStuffWithAsyncTask(View v) {
+        MyAsyncTask task = new MyAsyncTask();
+        task.execute(5);
+    }
+
+
+    private class LooperThread extends Thread {
         public Handler handler;
 
         LooperThread() {
@@ -103,6 +113,43 @@ public class MainActivity extends AppCompatActivity {
             });
 
             Looper.loop();
+        }
+    }
+
+    class MyAsyncTask extends AsyncTask<Integer, Integer, Void> {
+        // AsyncTask will automatically create a thread to execute whatever we instruct in
+        // doInBackground
+        // From there you are in safe ground. However docs say you should not do stuff that is way
+        // to long with async tasks but prefer other methods.
+        // Calling publishProgress in doInBackground will call onProgressUpdate. The beauty is that
+        // onProgressUpdate is executed by the caller thread (i.e., UI thread), so from there you
+        // can safely call your UI and update it
+        // You also have the onPostExecute executed at the end of the successful processing also in the UI thread.
+        // You have support to cancel the exec in doInBackground, you can check for isCancelled()
+        @Override
+        protected Void doInBackground(Integer... seconds) {
+            for (int i = 0; i < seconds[0]; i++) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                publishProgress((i + 1) * 100 / seconds[0]);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            // This runs on UI thread
+            final String newText = txtOutput.getText() + " " + values[0];
+            txtOutput.setText(newText);
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            Snackbar.make(txtOutput, "Done!", Snackbar.LENGTH_LONG).show();
         }
     }
 }
