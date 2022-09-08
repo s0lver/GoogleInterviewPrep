@@ -1,8 +1,5 @@
 package com.solver.googleinterviewprep;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,9 +9,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class MainActivity extends AppCompatActivity {
+    public static final String tag = "clickOnMakeRequest";
     // https://www.dev2qa.com/android-thread-message-looper-handler-example/
     // gold https://stackoverflow.com/a/34522758
     private Handler mainThreadHandler;
@@ -69,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
         MyAsyncTask task = new MyAsyncTask();
         task.execute(5);
     }
-
 
     private class LooperThread extends Thread {
         public Handler handler;
@@ -151,5 +158,30 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void unused) {
             Snackbar.make(txtOutput, "Done!", Snackbar.LENGTH_LONG).show();
         }
+    }
+
+    public void clickOnMakeRequest(View view) {
+        new Thread(() -> {
+            try {
+                final String IP_ADDRESS = "192.168.100.14";
+                final int PORT = 3000;
+                URL url = new URL(String.format("http://%s:%s", IP_ADDRESS, PORT));
+                Log.i(tag, "Asking to " + url.toString());
+
+                HttpURLConnection client = (HttpURLConnection) url.openConnection();
+
+                InputStream in = new BufferedInputStream(client.getInputStream());
+                int readByte;
+                StringBuilder sb = new StringBuilder();
+                while ((readByte = in.read()) != -1) {
+                    sb.append((char) readByte);
+                }
+
+                Log.i(tag, sb.toString());
+                Snackbar.make(view, sb.toString(), Snackbar.LENGTH_LONG).show();
+            } catch (IOException e) {
+                Log.e(tag, e.getMessage());
+            }
+        }).start();
     }
 }
