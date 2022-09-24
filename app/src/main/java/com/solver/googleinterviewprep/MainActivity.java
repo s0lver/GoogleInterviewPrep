@@ -1,5 +1,6 @@
 package com.solver.googleinterviewprep;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,8 +19,12 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Request.Builder;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     public static final String tag = "clickOnMakeRequest";
@@ -160,13 +165,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private String createUrlString() {
+        final String IP_ADDRESS = "192.168.100.14";
+        final int PORT = 3000;
+
+        return String.format("http://%s:%s", IP_ADDRESS, PORT);
+    }
+
     public void clickOnMakeRequest(View view) {
         new Thread(() -> {
             try {
-                final String IP_ADDRESS = "192.168.100.14";
-                final int PORT = 3000;
-                URL url = new URL(String.format("http://%s:%s", IP_ADDRESS, PORT));
-                Log.i(tag, "Asking to " + url.toString());
+
+                URL url = new URL(createUrlString());
+                Log.i(tag, "Asking to " + url);
 
                 HttpURLConnection client = (HttpURLConnection) url.openConnection();
 
@@ -183,5 +194,28 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(tag, e.getMessage());
             }
         }).start();
+    }
+
+    public void clickOnMakeRequestOkHttp(View view) {
+        new Thread(() -> {
+            OkHttpClient client = new OkHttpClient();
+            Builder builder = new Builder();
+
+            Request request = builder.url(createUrlString()).build();
+
+            try {
+                Response response = client.newCall(request).execute();
+                if (response.body() != null) {
+                    String responseAsString = response.body().string();
+                    Snackbar.make(view, responseAsString, Snackbar.LENGTH_LONG).show();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public void clickOnLaunchFragActivity(View view){
+        startActivity(new Intent(this.getApplicationContext(), ActivityWithFragments.class));
     }
 }
