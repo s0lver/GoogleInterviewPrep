@@ -10,6 +10,7 @@
         android:id="@+id/btnShowFrag2"
         android:layout_width="195dp"
         android:layout_height="wrap_content"
+        android:onClick="clickOnViewFrag2"
         android:text="Frag 2"
         app:layout_constraintEnd_toStartOf="@+id/fragmentContainerView"
         app:layout_constraintHorizontal_bias="0.5"
@@ -21,6 +22,7 @@
         android:layout_width="194dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:onClick="clickOnViewFrag1"
         android:text="Frag 1"
         app:layout_constraintEnd_toStartOf="@+id/btnShowFrag2"
         app:layout_constraintHorizontal_bias="0.5"
@@ -29,12 +31,12 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
-        android:name="com.solver.googleinterviewprep.SampleFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnShowFrag1" />
+        app:layout_constraintTop_toBottomOf="@+id/btnShowFrag1"
+        tools:layout="@layout/fragment_sample" />
 </androidx.constraintlayout.widget.ConstraintLayout>
