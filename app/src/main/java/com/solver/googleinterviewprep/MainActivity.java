@@ -1,5 +1,7 @@
 package com.solver.googleinterviewprep;
 
+import static com.solver.googleinterviewprep.Utils.createUrlString;
+
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -73,7 +75,8 @@ public class MainActivity extends AppCompatActivity {
         looperThread.handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Log.i("here", "arbitrary message in arbitrary runnable in " + Thread.currentThread().getName());
+                Log.i("here", "arbitrary message in arbitrary runnable in " + Thread.currentThread()
+                    .getName());
             }
         }, 3000);
     }
@@ -103,9 +106,9 @@ public class MainActivity extends AppCompatActivity {
                     Bundle messageData = message.getData();
 
                     Log.i("LooperThread",
-                            "Got " + messageData.getString("name") + ", " +
-                                    messageData.getInt("age") + " in " +
-                                    Thread.currentThread().getName()
+                        "Got " + messageData.getString("name") + ", " +
+                            messageData.getInt("age") + " in " +
+                            Thread.currentThread().getName()
                     );
 
                     Message newMessage = new Message();
@@ -165,13 +168,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private String createUrlString() {
-        final String IP_ADDRESS = "192.168.100.14";
-        final int PORT = 3000;
-
-        return String.format("http://%s:%s", IP_ADDRESS, PORT);
-    }
-
     public void clickOnMakeRequest(View view) {
         new Thread(() -> {
             try {
@@ -184,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
                 InputStream in = new BufferedInputStream(client.getInputStream());
                 int readByte;
                 StringBuilder sb = new StringBuilder();
+
                 while ((readByte = in.read()) != -1) {
                     sb.append((char) readByte);
                 }
@@ -215,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    public void clickOnLaunchFragActivity(View view){
+    public void clickOnLaunchFragActivity(View view) {
         startActivity(new Intent(this.getApplicationContext(), ActivityWithFragments.class));
     }
 }
