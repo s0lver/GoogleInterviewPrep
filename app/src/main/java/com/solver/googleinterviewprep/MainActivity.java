@@ -215,4 +215,8 @@ public class MainActivity extends AppCompatActivity {
     public void clickOnLaunchFragActivity(View view) {
         startActivity(new Intent(this.getApplicationContext(), ActivityWithFragments.class));
     }
+
+    public void clickOnLaunchServiceActivity(View view){
+        startActivity(new Intent(this, ServiceActivity.class));
+    }
 }
