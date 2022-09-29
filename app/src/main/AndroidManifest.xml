@@ -17,9 +17,13 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <service
-            android:name=".SampleStartedService"
+            android:name=".SampleBoundService"
             android:enabled="true"
             android:exported="true"></service>
+        <service
+            android:name=".SampleStartedService"
+            android:enabled="true"
+            android:exported="true" />
 
         <activity
             android:name=".ServiceActivity"
