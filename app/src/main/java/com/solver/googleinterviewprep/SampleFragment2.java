@@ -41,7 +41,9 @@ public class SampleFragment2 extends Fragment {
     }
 
     public void onDoMagicButtonClick(View view) {
-        WorkRequest request = new OneTimeWorkRequest.Builder(WorkTask.class).build();
+        WorkRequest request = new OneTimeWorkRequest.Builder(WorkTask.class)
+            .setInputData(new Data.Builder().putString("body", "haha")
+                .build()).build();
 
         WorkManager workerManagerInstance = WorkManager.getInstance(this.getActivity());
 

@@ -3,6 +3,7 @@ package com.solver.googleinterviewprep;
 import static com.solver.googleinterviewprep.Utils.createUrlString;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.work.Data;
@@ -20,6 +21,7 @@ public class WorkTask extends Worker {
     public WorkTask(@NonNull Context context,
         @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
+        Log.i("WorkTask", "Input data is " + workerParams.getInputData().toString());
     }
 
     @NonNull
